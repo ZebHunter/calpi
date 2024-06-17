@@ -1,0 +1,18 @@
+# Функция
+
+f :: Int -> Int
+f(x) = if x == 0 then 1 else x * f(x - 1);
+
+g :: Int -> Int -> Int
+g(a)(b) = a + b
+
+s :: Int -> Int
+s a = g a
+
+
+
+
+let jopa = set 5
+
+
+jopa 6 // == 11
