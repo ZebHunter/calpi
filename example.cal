@@ -12,7 +12,7 @@ s a = g a
 
 
 
-let jopa = set 5
+let jopa = s 5
 
 
 jopa 6 // == 11
