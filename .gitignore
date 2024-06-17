@@ -1,2 +1,6 @@
 /CMakeLists.txt
 /cmake-build-debug
+calpi
+lex.yy.c
+parser.tab.c
+parser.tab.h
