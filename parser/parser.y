@@ -37,18 +37,17 @@
 %%
 
 program: functions                                  {printf("program: functions\n");}
-    | function                                     {printf("program: function\n");}
 
-functions: function SEPARATOR function              {printf("functions: function; function\n");}
-    | function SEPARATOR functions                 {printf("functions: function; functions\n");}
+functions: function SEPARATOR functions              {printf("functions: function; function\n");}
+    | function                                      {printf("functions: function; functions\n");}
 
-function: statement definition ASSIGN expression    {printf("function: statement\n definition -> expression\n");}
-    | definition ASSIGN expression                 {printf("function: definition -> expression\n");}
+function: statement definition ASSIGN expression    {printf("function: statement\n definition -> expression\n");}   //Если что, оставить это
+    | definition ASSIGN expression                  {printf("function: definition -> expression\n");}
 
-statement: func_name TYPE_SEP list_types           {printf("statement: f_name :: list types\n");}
+statement: func_name TYPE_SEP types           {printf("statement: f_name :: list types\n");}
 
-list_types: type ARROW type                         {printf("list_types: type -> type\n");}
-    | type ARROW list_types                         {printf("list_types: type -> list_types\n");}
+types: types ARROW types                         {printf("list_types: type -> type\n");}
+    | L_SKOBKA types R_SKOBKA                         {printf("list_types: type -> list_types\n");}
     | type                                         {printf("list_types: type\n");}
 
 type: INT | BOOL                                   {printf("type: Int | Bool\n");}
