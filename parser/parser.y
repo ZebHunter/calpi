@@ -63,6 +63,12 @@ arg: NAME                                           {printf("arg: Name\n");}
 
 func_name: NAME                                     {printf("f_name: Name\n");}
 
+calling: func_name expressions
+
+expressions: expression expressions
+    | expression
+    |
+
 expression: condition                               {printf("expression: condition");}
     | math_exp                                      {printf("expression: math_exp");}
     | logic_exp                                     {printf("expression: logic_exp");}
