@@ -36,13 +36,16 @@
 
 %%
 
-program: functions                                  {printf("program: functions\n");}
+program: functions
+    | statements                                  {printf("program: functions\n");}
 
 functions: function SEPARATOR functions             {printf("functions: function; function\n");}
     | function                                      {printf("functions: function; functions\n");}
 
-function: statement definition ASSIGN expression    {printf("function: statement\n definition -> expression\n");}   //Если что, оставить это
-    | definition ASSIGN expression                  {printf("function: definition -> expression\n");}
+function: definition ASSIGN expression                  {printf("function: definition -> expression\n");}
+
+statements: statement
+    | statement statements
 
 statement: func_name TYPE_SEP types                 {printf("statement: f_name :: list types\n");}
 
