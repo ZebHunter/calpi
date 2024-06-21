@@ -24,7 +24,7 @@
 %token AND OR LESS LESS_EQ GT GT_EQ EQUALS NOT_EQUALS
 %token<text> NAME
 %token<num> DIGIT
-%token LAMBDA NOT
+%token LAMBDA
 
 %left PLUS MINUS
 %left MUL 
@@ -37,7 +37,7 @@
 %%
 
 program: functions
-    | statements                                  {printf("program: functions\n");}
+    | statements functions                               {printf("program: functions\n");}
 
 functions: function SEPARATOR functions             {printf("functions: function; function\n");}
     | function                                      {printf("functions: function; functions\n");}
