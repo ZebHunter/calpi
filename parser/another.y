@@ -79,7 +79,7 @@ defuns: defun SEPARATOR defuns
 defun: var ASSIGN expression
 
 alts: alt SEPARATOR alts
-    | alt
+    | alt SEPARATOR
 
 alt: DIGIT vars ARROW expression
 
