@@ -11,15 +11,15 @@
     int num;
 }
 
-//%token IF THEN ELSE ELIF
+%token IF THEN ELSE ELIF
 %token SEPARATOR
 %token ASSIGN
-//%token TYPE_SEP
+%token TYPE_SEP
 %token ARROW
-//%token INT BOOL
-//%token COMMA
+%token INT BOOL
+%token COMMA
 %token L_SKOBKA R_SKOBKA
-//%token WHERE
+%token WHERE
 %token PLUS MINUS MUL DIVIDE
 %token AND OR LESS LESS_EQ GT GT_EQ EQUALS NOT_EQUALS
 %token<text> NAME

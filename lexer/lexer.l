@@ -3,7 +3,7 @@
 %{
 #include <stdio.h>
 //#include "../src/ast.h"
-#include "parser.tab.h"
+#include "another.tab.h"
 %}
 
 %%
