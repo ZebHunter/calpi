@@ -19,4 +19,9 @@ typedef struct {
 
 void stat_apply(state_t* state, stat_t (*stat_fun)(stat_t));
 
+
+// TODO remove
+typedef struct{} program_t;
+state_t* compile(program_t* program);
+
 #endif

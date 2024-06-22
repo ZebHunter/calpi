@@ -12,6 +12,8 @@ typedef struct{
     addr_t a2;
 } ap_t;
 
+
+//хз мб менять надо будет
 typedef struct{
     char* name;
     char** supercombs;
