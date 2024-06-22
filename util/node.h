@@ -13,9 +13,9 @@ typedef struct{
 } ap_t;
 
 typedef struct{
-    //name
-    //args
-    //body
+    char* name;
+    char** supercombs;
+    int32_t num;
 } supercomp_t;
 
 typedef struct{
