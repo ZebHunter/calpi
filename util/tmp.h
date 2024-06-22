@@ -1,15 +1,9 @@
 
-
-
-
-
-typedef name_t char*;
-
-typedef
+#include "node.h"
 
 
 typedef struct program {
     struct program* next;
     struct prigram* prev;
-    sc_def_t* definition;
+    supercomp_t* definition;
 } program_t;

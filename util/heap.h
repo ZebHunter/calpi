@@ -2,6 +2,7 @@
 #define HEAP
 
 #include <stdint.h>
+#include <stdlib.h>
 #include "node.h"
 #include "map.h"
 
@@ -20,6 +21,8 @@ typedef struct {
     int_list_t* free;
     node_t* mappings[MEM_SIZE + 1];
 } heap_t;
+
+int_list_t* list_init(addr_t val);
 
 heap_t* heap_empty();
 addr_t heap_alloc(heap_t* heap, node_t* node);

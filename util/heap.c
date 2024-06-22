@@ -1,7 +1,10 @@
 #include "heap.h"
 
-
-
+int_list_t* list_init(addr_t val) {
+    int_list_t* l = malloc(sizeof(int_list_t));
+    l->val = val;
+    return l;
+}
 
 heap_t* heap_empty() {
     heap_t* heap = malloc(sizeof(heap_t));

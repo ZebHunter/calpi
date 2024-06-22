@@ -10,6 +10,7 @@ void* map_find(map_t * map, char* key) {
         }
         map = map->next;
     }
+    return 0;
 }
 
 void map_add(map_t** map, char* key, void* val){

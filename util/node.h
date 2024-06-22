@@ -13,11 +13,12 @@ typedef struct{
 } ap_t;
 
 
-//хз мб менять надо будет
+//TODO remove
+typedef struct{} expr_t;
 typedef struct{
     char* name;
-    char** supercombs;
-    int32_t num;
+    char** args;
+    expr_t* body;
 } supercomp_t;
 
 typedef struct{

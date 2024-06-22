@@ -13,6 +13,6 @@ typedef struct map {
 
 void* map_find(map_t * map, char* key);
 map_t* map_empty();
-void map_add(map_t* map, char* key, void* val);
+void map_add(map_t** map, char* key, void* val);
 
 #endif
