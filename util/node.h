@@ -21,11 +21,11 @@ typedef struct{
 typedef struct{
     node_type_e type;
 
-    unit {
+    union {
         ap_t ap;
         supercomp_t supercomb;
         int32_t n;
-    }
+    };
 
 } node_t;
 
