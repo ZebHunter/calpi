@@ -28,7 +28,7 @@ typedef struct{
 
     union {
         ap_t ap;
-        supercomp_t* supercomb;
+        supercomb_t* supercomb;
         int32_t n;
     };
 
@@ -46,6 +46,7 @@ typedef struct {
 } heap_t;
 
 int_list_t* list_init(addr_t val);
+int_list_t* list_push(int_list_t* l, addr_t val);
 
 heap_t* heap_empty();
 addr_t heap_alloc(heap_t* heap, heap_node_t* node);

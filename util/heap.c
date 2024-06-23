@@ -6,6 +6,13 @@ int_list_t* list_init(addr_t val) {
     return l;
 }
 
+int_list_t* list_push(int_list_t* l, addr_t val) {
+    int_list_t* new = list_init(val);
+    new->next = l;
+    l->prev = new;
+    return new;
+}
+
 heap_t* heap_empty() {
     heap_t* heap = malloc(sizeof(heap_t));
     *heap = (heap_t){0};

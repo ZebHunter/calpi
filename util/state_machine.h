@@ -3,7 +3,6 @@
 
 #include "heap.h"
 #include "map.h"
-#include "tmp.h"
 
 
 typedef int32_t stat_t;

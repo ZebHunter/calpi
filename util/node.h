@@ -6,7 +6,7 @@
 typedef struct program {
     struct program* next;
     struct prigram* prev;
-    supercomp_t* definition;
+    supercomb_t* definition;
 } program_t;
 
 typedef enum {
@@ -85,6 +85,6 @@ typedef struct{
     char* name;
     string_list_t* args;
     expr_t* body;
-} supercomp_t;
+} supercomb_t;
 
 #endif
