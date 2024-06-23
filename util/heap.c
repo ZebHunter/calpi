@@ -1,7 +1,17 @@
 #include "heap.h"
 
+int_list_t* list_init(addr_t val) {
+    int_list_t* l = malloc(sizeof(int_list_t));
+    l->val = val;
+    return l;
+}
 
-
+int_list_t* list_push(int_list_t* l, addr_t val) {
+    int_list_t* new = list_init(val);
+    new->next = l;
+    l->prev = new;
+    return new;
+}
 
 heap_t* heap_empty() {
     heap_t* heap = malloc(sizeof(heap_t));
@@ -17,7 +27,7 @@ heap_t* heap_empty() {
     return heap;
 }
 
-addr_t heap_alloc(heap_t* heap, node_t* node) {
+addr_t heap_alloc(heap_t* heap, heap_node_t* node) {
     heap->size += 1;
     addr_t addr = heap->free->val;
     heap->mappings[addr] = node;
@@ -25,7 +35,7 @@ addr_t heap_alloc(heap_t* heap, node_t* node) {
     return addr;
 }
 
-void heap_update(heap_t* heap, addr_t addr, node_t* node){
+void heap_update(heap_t* heap, addr_t addr, heap_node_t* node){
     heap->mappings[addr] = node;
 }
 
@@ -34,6 +44,6 @@ void heap_free(heap_t* heap, addr_t addr) {
     heap->mappings[addr] = 0;
 }
 
-node_t* heap_find(heap_t* heap, addr_t addr){
+heap_node_t* heap_find(heap_t* heap, addr_t addr){
     return heap->mappings[addr];
 }
