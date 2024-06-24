@@ -21,7 +21,6 @@ int main(void){
         printf("%d\n", node->data);
     }
 
-    freeList(int, list2);
     printf("tail = %d\n",list1->tail->data);
 
     return 0;

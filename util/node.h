@@ -5,7 +5,7 @@
 
 typedef struct program {
     struct program* next;
-    struct prigram* prev;
+    struct program* prev;
     supercomb_t* definition;
 } program_t;
 
@@ -52,7 +52,6 @@ typedef struct {
 } alt_t;
 
 typedef struct alt_list {
-    char* name;
     alt_t* alt;
 
     struct alt_list* next;
