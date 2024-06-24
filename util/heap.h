@@ -30,6 +30,8 @@ typedef struct{
         ap_t ap;
         supercomb_t* supercomb;
         int32_t n;
+        //ind
+        //op
     };
 
 } heap_node_t;
@@ -47,6 +49,10 @@ typedef struct {
 
 int_list_t* list_init(addr_t val);
 int_list_t* list_push(int_list_t* l, addr_t val);
+int_list_t* list_concat(int_list_t* l1, int_list_t* l2);
+void list_free(int_list_t* l);
+int_list_t* list_drop(int_list_t* l, int32_t n);
+
 
 heap_t* heap_empty();
 addr_t heap_alloc(heap_t* heap, heap_node_t* node);

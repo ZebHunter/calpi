@@ -91,7 +91,7 @@ defuns: defun SEPARATOR defuns
     | defun SEPARATOR
 
 //defs_list_t*
-defun: var ASSIGN expression
+defun: vars ASSIGN expression
 
 //alt_list*
 alts: alt SEPARATOR alts

@@ -60,6 +60,36 @@ state_t* compile(program_t* program) {
     return init_state;
 }
 
+addr_t instantiate(expr_t* expr, heap_t* heap, map_t* env) {
+    switch (expr->type) {
+    case E_VAL: {
+        heap_node_t* n = malloc(sizeof(heap_node_t));
+        n->type = N_VAL;
+        n->n = expr->val;
+        return heap_alloc(heap, n);
+    }
+    case E_AP: {
+        heap_node_t* n = malloc(sizeof(heap_node_t));
+        n->type = N_AP;
+        n->ap  = (ap_t){.a1 = instantiate(expr->ap.left, heap, env),
+                        .a2 = instantiate(expr->ap.right, heap, env)
+                        };
+        return heap_alloc(heap, n);
+    }
+    case E_VAR: {
+        addr_t addr = map_find(env, expr->name);
+        if (!addr) // JOPA JOPA JOPA UNDEF NAME;
+        return addr;
+    }
+    case E_CASE: {
+        //JOPA JOPA CASE INSTANT JOPA
+        return -1;
+    }
+    default:
+        break;
+    }
+}
+
 bool is_final(state_t* state) {
     if (!state->stack) return true;
     if(!(state->stack->next) && heap_find(state->heap, state->stack->val)->type == N_VAL) return true;
@@ -80,7 +110,23 @@ void ap_step(state_t* state, ap_t ap) {
 }
 
 void supercomb_step(state_t* state, supercomb_t* sc) {
-    //TODO
+    map_t* arg_bindings = map_empty();
+    string_list_t* name = sc->args;
+    int_list_t* stack = state->stack->next;
+    int len = 0;
+    while (name) {
+        map_add(&arg_bindings, name->str, heap_find(state->heap, stack->val));
+        name = name->next;
+        stack = stack->next;
+        len++;
+    }
+
+    map_t* env = map_concat(arg_bindings, state->globals);
+
+    addr_t result_addr = instantiate(sc->body, state->heap, env);
+
+    state->stack = list_drop(state->stack, len + 1);
+    state->stack = list_push(state->stack, result_addr);
 }
 
 void step(state_t* state) {
