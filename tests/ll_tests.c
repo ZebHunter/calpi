@@ -1,6 +1,13 @@
 #include "../util/linked_list.h"
 #include <stdio.h>
 
+#define lambda(lambda$_ret, lambda$_args, lambda$_body)\
+  ({\
+    lambda$_ret lambda$__anon$ lambda$_args\
+      lambda$_body\
+    &lambda$__anon$;\
+  })
+
 declareList(int, int);
 
 int main(void){
@@ -20,7 +27,8 @@ int main(void){
     listForEach(int, list1, node){
         printf("%d\n", node->data);
     }
-
+    printf( "Sum = %d\n", lambda(int, (int x, int y, int z), { return x + y + z; })(1, 2, 3) );
+    printf( "Sum = %d\n", lambda(int, (int x, int y), { return x + y; })(1, 2) );
     printf("tail = %d\n",list1->tail->data);
 
     return 0;

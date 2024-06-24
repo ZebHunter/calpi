@@ -2,29 +2,29 @@
 
 %{
 #include <stdio.h>
-//#include "../src/ast.h"
+#include "../src/ast.h"
 #include "another.tab.h"
 %}
 
 %%
 
-\+     {return PLUS;}
-\-     {return MINUS;}
-\*     {return MUL;}
-\/     {return DIVIDE;}
+\+     {yylval.text = strdup(yytext); return PLUS;}
+\-     {yylval.text = strdup(yytext); return MINUS;}
+\*     {yylval.text = strdup(yytext); return MUL;}
+\/     {yylval.text = strdup(yytext); return DIVIDE;}
 \=     {return ASSIGN;}
 \,     {return COMMA;}
 \;     {return SEPARATOR;}
 \(     {return L_SKOBKA;}
 \)     {return R_SKOBKA;}
-\>     {return GT;}
-\<     {return LESS;}
-\>\=    {return GT_EQ;}
-\<\=    {return LESS_EQ;}
-\=\=    {return EQUALS;}
-\!\=    {return NOT_EQUALS;}
-\&\&    {return AND;}
-\|\|    {return OR;}
+\>     {yylval.text = strdup(yytext); return GT;}
+\<     {yylval.text = strdup(yytext); return LESS;}
+\>\=    {yylval.text = strdup(yytext); return GT_EQ;}
+\<\=    {yylval.text = strdup(yytext); return LESS_EQ;}
+\=\=    {yylval.text = strdup(yytext); return EQUALS;}
+\!\=    {yylval.text = strdup(yytext); return NOT_EQUALS;}
+\&\&    {yylval.text = strdup(yytext); return AND;}
+\|\|    {yylval.text = strdup(yytext); return OR;}
 ::    {return TYPE_SEP;}
 if    {return IF;}
 else  {return ELSE;}
@@ -37,7 +37,7 @@ where {return WHERE;}
 let   {return LET;}
 in    {return IN;}
 case  {return CASE;}
-%     {return MOD;}
+%     {yylval.text = strdup(yytext);return MOD;}
 [A-Za-z_][A-Za-z0-9_]* {yylval.text = strdup(yytext); return NAME;}
 [+-]?[0-9]+  {yylval.num = atoi(yytext); return DIGIT;}
 [ \t\r\n]     { }

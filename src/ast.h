@@ -76,7 +76,7 @@ program_t* addProgramNode(supercomb_t* comb, program_t* next){
     return program;
 }
 
-supercomb_t* addSuperComb(string_list_t* args, expr_t* expr){
+supercomb_t* addSupercomb(string_list_t* args, expr_t* expr){
     supercomb_t* comb = malloc(sizeof(supercomb_t));
     char* name = args->str;
     args = args->next;
@@ -110,6 +110,7 @@ defs_list_t* addDefun(const char* name, expr_t* expr){
 expr_t* addLetExpr(defs_list_t* defuns, expr_t* expr){
     expr_t* let = malloc(sizeof(expr_t));
     let->type = E_LET;
+    let->let = malloc(sizeof(e_let_t));
     let->let->defs = defuns;
     let->let->body = expr;
     let->let->is_rec = false;
@@ -119,6 +120,7 @@ expr_t* addLetExpr(defs_list_t* defuns, expr_t* expr){
 expr_t* addCaseExpr(expr_t* expr, alt_list_t* alts){
     expr_t* case_ex = malloc(sizeof(expr_t));
     case_ex->type = E_CASE;
+    case_ex->my_case = malloc(sizeof(e_case_t));
     case_ex->my_case->case_val = expr;
     case_ex->my_case->alts = alts;
     return case_ex;
@@ -135,13 +137,58 @@ alt_t* addAlt(int32_t case_num, string_list_t* list, expr_t* expr){
 alt_list_t* addAltList(alt_t* alt, alt_list_t* list){
     alt_list_t* node = malloc(sizeof(alt_list_t));
     node->alt = alt;
-    node->prev = NULL;
     node->next = list;
-    list->prev = node;
+    if(list) list->prev = node;
     return node;
 }
 
+expr_t* addLambda(string_list_t* vars, expr_t* expr){
+    expr_t* lambda = malloc(sizeof(expr_t));
+    lambda->type = E_LAM;
+    lambda->lambda = malloc(sizeof(e_lam_t));
+    lambda->lambda->bounded_vars = vars;
+    lambda->lambda->body = expr;
+    return lambda;
+}
 
+expr_t* wrapperExprOperation(expr_t* expr1, expr_t* expr2){
+    expr_t* e = malloc(sizeof(expr_t));
+    e->type = E_AP;
+    e->ap = malloc(sizeof(e_ap_nodes));
+    e->ap->left = expr1;
+    e->ap->right = expr2;
+    return e;
+}
+
+expr_t* addExprOperation(const char* operation, expr_t* expr){
+    expr_t* oper = malloc(sizeof(expr_t));
+    oper->type = E_VAR;
+    oper->name = operation;
+    expr_t* e = malloc(sizeof(expr_t));
+    e->type = E_AP;
+    e->ap = malloc(sizeof(e_ap_nodes));
+    e->ap->left = oper;
+    e->ap->right = expr;
+    return e;
+}
+
+expr_t* addAexprVar(const char* var){
+    expr_t* expr = malloc(sizeof(expr_t));
+    expr->type = E_VAR;
+    expr->name = var;
+    return expr;
+}
+
+expr_t* addAexprDigit(int32_t num){
+    expr_t* expr = malloc(sizeof(expr_t));
+    expr->type = E_VAL;
+    expr->val = num;
+    return expr;
+}
+
+// expr_t* addAexprExp(expr_t* expr){
+//     return expr;
+// }
 
 
 #endif //AST_H

@@ -73,7 +73,7 @@ typedef struct {
     union {
         char* name;
         int32_t val;
-        e_ap_nodes ap;
+        e_ap_nodes* ap;
         e_let_t* let;
         e_case_t* my_case;
         e_lam_t* lambda;
