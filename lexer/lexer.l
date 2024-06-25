@@ -2,7 +2,7 @@
 
 %{
 #include <stdio.h>
-#include "../src/ast.h"
+#include "src/ast.h"
 #include "another.tab.h"
 %}
 
@@ -13,7 +13,6 @@
 \*     {yylval.text = strdup(yytext); return MUL;}
 \/     {yylval.text = strdup(yytext); return DIVIDE;}
 \=     {return ASSIGN;}
-\,     {return COMMA;}
 \;     {return SEPARATOR;}
 \(     {return L_SKOBKA;}
 \)     {return R_SKOBKA;}
@@ -25,15 +24,8 @@
 \!\=    {yylval.text = strdup(yytext); return NOT_EQUALS;}
 \&\&    {yylval.text = strdup(yytext); return AND;}
 \|\|    {yylval.text = strdup(yytext); return OR;}
-::    {return TYPE_SEP;}
-if    {return IF;}
-else  {return ELSE;}
-then  {return THEN;}
 \\    {return LAMBDA;}
-Int   {return INT;}
-Bool  {return BOOL;}
 ->    {return ARROW;}
-where {return WHERE;}
 let   {return LET;}
 in    {return IN;}
 case  {return CASE;}

@@ -2,7 +2,9 @@
 %{
 #include <stdio.h>
 #include <stdint.h>
-#include "../src/ast.h"
+#include "src/ast.h"
+#define YYDEBUG 1
+
 %}
 
 %parse-param {program_t* programs}
@@ -60,7 +62,7 @@
 %%
 
 //program_t*
-program: supercombinators       {programs = $1;}
+program: supercombinators       {programs = $1; printProgram(programs);}
 
 //program_t*
 supercombinators: supercombinator SEPARATOR supercombinators        {$$ = addProgramNode($1, $3);}
@@ -74,40 +76,40 @@ vars: var vars                              {$$ = addArgsList($1, $2);}
     | var                                   {$$ = addArgsList($1, NULL);}
 
 //char*
-var: NAME                                   {$$ = $1}
+var: NAME                                   {$$ = $1; printf("var = %s\n", $1);}
 
 //expr_t*
 expression: LET defuns IN expression        {$$ = addLetExpr($2, $4);}
     //LETREC ???
     | CASE expression IN alts               {$$ = addCaseExpr($2, $4);}
     | LAMBDA vars ARROW expression          {$$ = addLambda($2, $4);}
-    | expr1                                 {$$ = wrapperExprOperation(NULL, $1);}
+    | expr1                                 {$$ = $1;}
 
 //expr_t*
 expr1: expr2 OR expr1           {$$ = wrapperExprOperation(addExprOperation($2, $1), $3);}
-    | expr2                     {$$ = wrapperExprOperation(NULL, $1);}
+    | expr2                     {$$ = $1;}
 
 //expr_t*
 expr2: expr3 AND expr2          {$$ = wrapperExprOperation(addExprOperation($2, $1), $3);}
-    | expr3                     {$$ = wrapperExprOperation(NULL, $1);}
+    | expr3                     {$$ = $1;}
 
 //expr_t*
 expr3: expr4 relop expr4        {$$ = wrapperExprOperation(addExprOperation($2, $1), $3);}
-    | expr4                     {$$ = wrapperExprOperation(NULL, $1);}
+    | expr4                     {$$ = $1;}
 
 //expr_t*
 expr4: expr5 PLUS expr4         {$$ = wrapperExprOperation(addExprOperation($2, $1), $3);}
     | expr5 MINUS expr5         {$$ = wrapperExprOperation(addExprOperation($2, $1), $3);}
-    | expr5                     {$$ = wrapperExprOperation(NULL, $1);}
+    | expr5                     {$$ = $1;}
 
 //expr_t*
 expr5: expr6 MUL expr5          {$$ = wrapperExprOperation(addExprOperation($2, $1), $3);}
     | expr6 DIVIDE expr6        {$$ = wrapperExprOperation(addExprOperation($2, $1), $3);}
     | expr6 MOD expr6           {$$ = wrapperExprOperation(addExprOperation($2, $1), $3);}
-    | expr6                     {$$ = wrapperExprOperation(NULL, $1);}
+    | expr6                     {$$ = $1;}
 
 //expr_t*
-expr6: aexprs                   {$$ = wrapperExprOperation(NULL, $1);}
+expr6: aexprs                   {$$ = $1;}
 
 //defs_list_t*
 defuns: defun SEPARATOR defuns    {$$ = addDefsList($1, $3);}
@@ -126,12 +128,12 @@ alt: DIGIT vars ARROW expression    {$$ = addAlt($1, $2, $4);}
 relop: LESS | LESS_EQ | GT | GT_EQ | EQUALS | NOT_EQUALS
 
 //expr_t*
-aexprs: aexpr aexprs                    {$$ = wrapperExprOperation($1, $2);}
-    | aexpr                             {$$ = wrapperExprOperation($1, NULL);}
+aexprs: aexprs aexpr                    {$$ = $2;}
+    | aexpr                             {$$ = $1;}
 
 //expr_t*
 aexpr: var                              {$$ = addAexprVar($1);}
-    | DIGIT                             {$$ = addAexprDigit($1);}
+    | DIGIT                             {$$ = addAexprDigit($1); printf("Digit - %d\n", $1);}
     | L_SKOBKA expression R_SKOBKA      {$$ = $2;}
 
 %%
