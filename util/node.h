@@ -66,7 +66,6 @@ typedef struct program {
     supercomb_t* definition;
 } program_t;
 
-
 typedef struct defs_list {
     char* name;
     expr_t* def_body;

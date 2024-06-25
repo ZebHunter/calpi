@@ -13,6 +13,33 @@ int_list_t* list_push(int_list_t* l, addr_t val) {
     return new;
 }
 
+int_list_t* list_concat(int_list_t* l1, int_list_t* l2) {
+    if(!l1) return l2;
+    int_list_t* l = l1;
+    while(l1->next) {
+        l1 = l1->next;
+    }
+    l1->next = l2;
+    l2->prev = l1;
+    return l;
+}
+
+void list_free(int_list_t* l) {
+    if (l->prev) l->prev->next = 0;
+    if (l->next) l->next->prev = 0;
+    free(l);
+}
+
+int_list_t* list_drop(int_list_t* l, int32_t n) {
+    int_list_t* prev = l;
+    for (int32_t i = 0; i < n && l; ++i) {
+        prev = l;
+        l = l->next;
+        list_free(prev);
+    }
+    return l;
+}
+
 heap_t* heap_empty() {
     heap_t* heap = malloc(sizeof(heap_t));
     *heap = (heap_t){0};
