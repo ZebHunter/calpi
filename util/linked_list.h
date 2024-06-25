@@ -102,6 +102,7 @@
 
 #define concate(l1, l2) do {    \
    linkNodes(l1->tail, l2->head);   \
+   l1->tail = l2->tail; \
 } while(0)
 
 #endif

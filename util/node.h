@@ -16,26 +16,26 @@ typedef enum {
 typedef struct {
     //if letrec exists
     bool is_rec;
-    defs_list_t* defs;
-    expr_t* body;
+    struct defs_list* defs;
+    struct expr* body;
 } e_let_t;
 
 typedef struct {
-    expr_t* left;
-    expr_t* right;
+    struct expr* left;
+    struct expr* right;
 } e_ap_nodes;
 
 typedef struct {
-    expr_t* case_val;
-    alt_list_t* alts;
+    struct expr* case_val;
+    struct alt_list* alts;
 } e_case_t;
 
 typedef struct {
-    string_list_t* bounded_vars;
-    expr_t* body;
+    struct string_list* bounded_vars;
+    struct expr* body;
 } e_lam_t;
 
-typedef struct {
+typedef struct expr{
     expr_type_e type;
     union {
         char* name;
