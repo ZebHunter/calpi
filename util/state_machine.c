@@ -1,5 +1,21 @@
 #include "state_machine.h"
 
+dump_t* dump_empty() {
+    return (dump_t*) 0;
+}
+
+dump_t* dump_init(int_list_t* val) {
+    dump_t* d = malloc(sizeof(dump_t));
+    d->stack = val;
+    return d;
+}
+
+dump_t* dump_push(dump_t* d, int_list_t* st) {
+    dump_t* new = list_init(st);
+    new->next = d;
+    d->prev = new;
+    return new;
+}
 
 stat_t stat_init() {
     return 0;
@@ -23,19 +39,110 @@ typedef struct {
     map_t* globals;
 } tmp;
 
+typedef struct prims_{
+    char* s;
+    prim_e e;
+
+    struct prims_* next;
+} prims_tmp;
+
+prims_tmp* create_prims() {
+    prims_tmp* p1 = malloc(sizeof(prims_tmp));
+    p1->s = "!=";
+    p1->e = NON_EQ;
+    p1->next = 0;
+
+    prims_tmp* p2 = malloc(sizeof(prims_tmp));
+    p2->s = "==";
+    p2->e = EQ;
+    p2->next = p1;
+
+    prims_tmp* p3 = malloc(sizeof(prims_tmp));
+    p3->s = "<=";
+    p3->e = LT_EQ;
+    p3->next = p2;
+
+    prims_tmp* p4 = malloc(sizeof(prims_tmp));
+    p4->s = "<";
+    p4->e = LT;
+    p4->next = p3;
+
+    prims_tmp* p5 = malloc(sizeof(prims_tmp));
+    p5->s = ">=";
+    p5->e = GT_EQ;
+    p5->next = p4;
+
+    prims_tmp* p6 = malloc(sizeof(prims_tmp));
+    p6->s = ">";
+    p6->e = GT;
+    p6->next = p5;
+
+    prims_tmp* p7 = malloc(sizeof(prims_tmp));
+    p7->s = "||";
+    p7->e = OR;
+    p7->next = p6;
+
+    prims_tmp* p8 = malloc(sizeof(prims_tmp));
+    p8->s = "&&";
+    p8->e = AND;
+    p8->next = p7;
+
+    prims_tmp* p9 = malloc(sizeof(prims_tmp));
+    p9->s = "*";
+    p9->e = MUL;
+    p9->next = p8;
+
+    prims_tmp* p10 = malloc(sizeof(prims_tmp));
+    p10->s = "%";
+    p10->e = MOD;
+    p10->next = p9;
+
+    prims_tmp* p11 = malloc(sizeof(prims_tmp));
+    p11->s = "/";
+    p11->e = DIV;
+    p11->next = p10;
+
+    prims_tmp* p12 = malloc(sizeof(prims_tmp));
+    p12->s = "-";
+    p12->e = SUB;
+    p12->next = p11;
+
+    prims_tmp* p13 = malloc(sizeof(prims_tmp));
+    p13->s = "+";
+    p13->e = ADD;
+    p13->next = p12;
+
+    return p13;
+}
 
 tmp build_init_heap(program_t* defs) {
     heap_t* h = heap_empty();
     map_t* m = map_empty();
+    heap_node_t* node;
+    addr_t addr;
     while(defs) {
-        heap_node_t* node = malloc(sizeof(heap_node_t));
+        node = malloc(sizeof(heap_node_t));
         node->type = N_Supercomb;
         node->supercomb = defs->definition;
-        addr_t addr = heap_alloc(h, node);
+        addr = heap_alloc(h, node);
         map_add(&m, defs->definition->name, (void*)addr);
-
         defs = defs->next;
     }
+    prims_tmp* prims = create_prims(); 
+    prims_tmp* next;
+    while(prims) {
+        node = malloc(sizeof(heap_node_t));
+        node->type = N_OP;
+        node->prim = malloc(sizeof(prim_t));
+        node->prim->op_e = prims->e;
+        node->prim->op_s = prims->s;
+        addr = heap_alloc(h, node);
+        map_add(&m, defs->definition->name, (void*)addr);
+        next = prims->next;
+        free(prims);
+        prims = next;
+    }    
+
     return (tmp){.heap = h, .globals = m};
 }
 
@@ -55,7 +162,7 @@ state_t* compile(program_t* program) {
     init_state->globals = init.globals;
     init_state->heap = init.heap;
     init_state->stats = stat_init();
-    // init_state->dump = dump_init();
+    init_state->dump = dump_empty();
 
     return init_state;
 }
@@ -71,9 +178,9 @@ addr_t instantiate(expr_t* expr, heap_t* heap, map_t* env) {
     case E_AP: {
         heap_node_t* n = malloc(sizeof(heap_node_t));
         n->type = N_AP;
-        n->ap  = (ap_t){.a1 = instantiate(expr->ap.left, heap, env),
-                        .a2 = instantiate(expr->ap.right, heap, env)
-                        };
+        n->ap  = malloc(sizeof(ap_t));
+        n->ap->a1 = instantiate(expr->ap->left, heap, env);
+        n->ap->a2 = instantiate(expr->ap->right, heap, env);
         return heap_alloc(heap, n);
     }
     case E_VAR: {
@@ -90,6 +197,10 @@ addr_t instantiate(expr_t* expr, heap_t* heap, map_t* env) {
     }
 }
 
+void instantiate_and_update(expr_t* expr, addr_t addr, heap_t* heap, map_t* env) {
+    
+}
+
 bool is_final(state_t* state) {
     if (!state->stack) return true;
     if(!(state->stack->next) && heap_find(state->heap, state->stack->val)->type == N_VAL) return true;
@@ -101,12 +212,31 @@ void admin(state_t* state) {
 }
 
 void num_step(state_t* state, int32_t val) {
-    //JOPA JOPA JOPA INT ON STACK;
+    if (!state->stack) {
+        state->stack = state->dump->stack;
+        state->dump = state->dump->next;
+    }
+    else //JOPA JOPA JOPA
     return;
 }
 
-void ap_step(state_t* state, ap_t ap) {
-    state->stack = list_push(state->stack, ap.a1);
+void ap_step(state_t* state, ap_t* ap) {
+    heap_node_t* node = heap_find(state->heap, ap->a2);
+    if(node->type == N_IND) {
+        heap_node_t* n = malloc(sizeof(heap_node_t));
+        n->type = N_AP;
+        n->ap = malloc(sizeof(ap_t));
+        n->ap->a1 = ap->a1;
+        n->ap->a2 = node->addr;
+        heap_update(state->heap, state->stack->val, n);
+    }
+    else {
+        state->stack = list_push(state->stack, ap->a1);
+    }
+}
+
+void ind_step(state_t* state, addr_t a) {
+    state->stack->val = a;
 }
 
 void supercomb_step(state_t* state, supercomb_t* sc) {
@@ -123,10 +253,9 @@ void supercomb_step(state_t* state, supercomb_t* sc) {
 
     map_t* env = map_concat(arg_bindings, state->globals);
 
-    addr_t result_addr = instantiate(sc->body, state->heap, env);
+    instantiate_and_update(sc->body, stack->prev->val, state->heap, env);
 
-    state->stack = list_drop(state->stack, len + 1);
-    state->stack = list_push(state->stack, result_addr);
+    state->stack = list_drop(state->stack, len);
 }
 
 void step(state_t* state) {
@@ -138,6 +267,10 @@ void step(state_t* state) {
         return ap_step(state, node->ap);
     case N_Supercomb:
         return supercomb_step(state, node->supercomb);
+    case N_IND:
+        return ind_step(state, node->addr);
+    case N_OP:
+        return prim_step(state, node->prim->op_e);
     default:
         //JOPA JOPA JOPA
         break;

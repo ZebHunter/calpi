@@ -23,15 +23,36 @@ typedef enum {
     N_OP,
 } heap_node_type_e;
 
-typedef struct{
+typedef enum {
+    ADD,
+    SUB,
+    DIV,
+    MOD,
+    MUL,
+    AND,
+    OR,
+    GT,
+    GT_EQ,
+    LT,
+    LT_EQ,
+    EQ,
+    NON_EQ
+} prim_e;
+
+typedef struct {
+    prim_e op_e;
+    char* op_s;
+} prim_t;
+
+typedef struct {
     heap_node_type_e type;
 
     union {
-        ap_t ap;
+        ap_t* ap;
         supercomb_t* supercomb;
         int32_t n;
-        //ind
-        //op
+        addr_t addr;
+        prim_t* prim;
     };
 
 } heap_node_t;
