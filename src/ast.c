@@ -48,7 +48,6 @@ expr_t* addLetExpr(defs_list_t* defuns, expr_t* expr){
     let->let = malloc(sizeof(e_let_t));
     let->let->defs = defuns;
     let->let->body = expr;
-    let->let->is_rec = false;
     return let;
 }
 

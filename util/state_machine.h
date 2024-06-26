@@ -33,5 +33,5 @@ state_t* state_init();
 void stat_apply(state_t* state, stat_t (*stat_fun)(stat_t));
 
 state_t* compile(program_t* program);
-
+void eval(state_t* state);
 #endif
