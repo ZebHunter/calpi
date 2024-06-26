@@ -1,5 +1,7 @@
 #include "state_machine.h"
 
+#include <stdio.h>
+
 dump_t* dump_empty() {
     return (dump_t*) 0;
 }
@@ -307,49 +309,80 @@ void supercomb_step(state_t* state, supercomb_t* sc) {
 }
 
 void prim_step(state_t* state, prim_e op) {
-    //TODO write
-    switch (op) {
-    case ADD_P: {
+    addr_t b1 = heap_find(state->heap, state->stack->next->val)->ap->a2;
+    addr_t b2 = heap_find(state->heap, state->stack->next->next->val)->ap->a2;
+    heap_node_t* n1 = heap_find(state->heap, b1);
+    heap_node_t* n2 = heap_find(state->heap, b2);
+
+    if (n1->type == N_VAL && n2->type == N_VAL) {
+        heap_node_t* n_res = malloc(sizeof(heap_node_t));
+        n_res->type = N_VAL;
+        switch (op) {
+            case ADD_P: {
+                n_res->n = n1->n + n2->n;
+                break;
+            }
+            case SUB_P: {
+                n_res->n = n1->n - n2->n;
+                break;
+            }
+            case DIV_P: {
+                n_res->n = n1->n / n2->n;
+                break;
+            }
+            case MOD_P: {
+                n_res->n = n1->n % n2->n;
+                break;
+            }
+            case MUL_P: {
+                n_res->n = n1->n * n2->n;
+                break;
+            }
+            case AND_P: {
+                n_res->n = n1->n && n2->n;
+                break;
+            }
+            case OR_P: {
+                n_res->n = n1->n || n2->n;
+                break;
+            }
+            case GT_P: {
+                n_res->n = n1->n > n2->n;
+                break;
+            }
+            case GT_EQ_P: {
+                n_res->n = n1->n >= n2->n;
+                break;
+            }
+            case LT_P: {
+                n_res->n = n1->n < n2->n;
+                break;
+            }
+            case LT_EQ_P: {
+                n_res->n = n1->n <= n2->n;
+                break;
+            }
+            case EQ_P: {
+                n_res->n = n1->n == n2->n;
+                break;
+            }
+            case NON_EQ_P: {
+                n_res->n = n1->n != n2->n;
+                break;
+            }
+        }
+        addr_t b_res = heap_alloc(state->heap, n_res);
+        heap_update(state->heap, state->stack->next->next->val, n_res);
+        state->stack = list_init(b_res);
+        //AAAAAAAAAAAAa
+        printf("?res = %d", n_res->n);
         return;
     }
-    case SUB_P: {
+    else {
+        dump_push(state->dump, state->stack->next->next);
+        dump_push(state->dump, list_init(b1));
+        state->stack = list_init(b2);
         return;
-    }
-    case DIV_P: {
-        return;
-    }
-    case MOD_P: {
-        return;
-    }
-    case MUL_P: {
-        return;
-    }
-    case AND_P: {
-        return;
-    }
-    case OR_P: {
-        return;
-    }
-    case GT_P: {
-        return;
-    }
-    case GT_EQ_P: {
-        return;
-    }
-    case LT_P: {
-        return;
-    }
-    case LT_EQ_P: {
-        return;
-    }
-    case EQ_P: {
-        return;
-    }
-    case NON_EQ_P: {
-        return;
-    }
-    default:
-        break;
     }
 }
 
