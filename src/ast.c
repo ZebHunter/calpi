@@ -123,23 +123,80 @@ expr_t* addAexprDigit(int32_t num){
 
 void printProgram(program_t* program){
     for (program_t* node = program; node != NULL; node = node->next){
-        printSupercomb(node->definition);
+        printSupercomb(node->definition, 0);
     } 
 }
 
-void printVars(string_list_t* list){
+void printVars(string_list_t* list , int32_t lvl){
     for (string_list_t* node = list; node != NULL; node = node->next){
-        printf("Var: %s\n", node->str);
+        printf("%*sVar: %s\n", lvl, "", node->str);
     }
 }
 
-void printSupercomb(supercomb_t* supercomb){
-    printf("Name = %s\n", supercomb->name);
-    printf("Args = %s\n", supercomb->args->str); 
-    printf("Type = %d\n", supercomb->body->type);
+void printSupercomb(supercomb_t* supercomb, int32_t lvl){
+    printf("%*sName = %s\n", lvl, "", supercomb->name);
+    printVars(supercomb->args, lvl);
+    printExpr(supercomb->body, lvl);
 }
 
-void printExpr(expr_t* expr){
+void printExpr(expr_t* expr , int32_t lvl){
+    switch(expr->type){
+        case E_VAR:
+            printf("%*sExpression var: %s\n", lvl+1, "", expr->name);
+            break;
+        case E_VAL:
+            printf("%*sExpression value: %d\n", lvl+1, "",  expr->val);
+            break;
+        case E_AP:
+            printApExpr(expr->ap, lvl+1);
+            break;
+        case E_LET:
+            printLetExpression(expr->let, lvl+1);
+            break;
+        case E_CASE:
+            printCaseExpr(expr->my_case, lvl+1);
+            break;
+        case E_LAM:
+            printLambdaExpr(expr->lambda, lvl+1);
+    }
+}
 
+void printAlt(alt_t* alt, int32_t lvl){
+    printf("%*sCase_num: %d\n", lvl+1, "",  alt->case_num);
+    printVars(alt->bounded_vars,lvl+1);
+    printExpr(alt->body, lvl+1);
+}
+
+void printAlts(alt_list_t* alts, int32_t lvl){
+    for(alt_list_t* node = alts; node != NULL; node = node->next){
+        printAlt(node->alt, lvl);
+    }
+}
+
+void printDefs(defs_list_t* defs, int32_t lvl){
+    for(defs_list_t* node = defs; node != NULL; node = node->next){
+        printf("%*sFunc name: %s\n", lvl+1, "",  defs->name);
+        printExpr(defs->def_body, lvl+1);
+    }
+}
+
+void printCaseExpr(e_case_t* expr, int32_t lvl){
+    printExpr(expr->case_val, lvl+1);
+    printAlts(expr->alts, lvl+1);
+}
+
+void printLambdaExpr(e_lam_t* expr, int32_t lvl){
+    printVars(expr->bounded_vars, lvl+1);
+    printExpr(expr->body, lvl+1);
+}
+
+void printLetExpression(e_let_t* expr, int32_t lvl){
+    printDefs(expr->defs, lvl+1);
+    printExpr(expr->body, lvl+1);
+}
+
+void printApExpr(e_ap_nodes* expr, int32_t lvl){
+    if(expr->left) printExpr(expr->left, lvl+1);
+    if(expr->right) printExpr(expr->right, lvl+1);
 }
 

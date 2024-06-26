@@ -76,7 +76,7 @@ vars: var vars                              {$$ = addArgsList($1, $2);}
     | var                                   {$$ = addArgsList($1, NULL);}
 
 //char*
-var: NAME                                   {$$ = $1; printf("var = %s\n", $1);}
+var: NAME                                   {$$ = $1;}
 
 //expr_t*
 expression: LET defuns IN expression        {$$ = addLetExpr($2, $4);}
@@ -133,7 +133,7 @@ aexprs: aexprs aexpr                    {$$ = $2;}
 
 //expr_t*
 aexpr: var                              {$$ = addAexprVar($1);}
-    | DIGIT                             {$$ = addAexprDigit($1); printf("Digit - %d\n", $1);}
+    | DIGIT                             {$$ = addAexprDigit($1);}
     | L_SKOBKA expression R_SKOBKA      {$$ = $2;}
 
 %%

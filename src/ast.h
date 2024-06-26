@@ -38,11 +38,24 @@ expr_t* addAexprDigit(int32_t num);
 
 void printProgram(program_t* program);
 
-void printVars(string_list_t* list);
+void printVars(string_list_t* list, int32_t lvl);
 
-void printSupercomb(supercomb_t* supercomb);
+void printSupercomb(supercomb_t* supercomb, int32_t lvl);
 
-void printExpr(expr_t* expr);
+void printExpr(expr_t* expr, int32_t lvl);
 
+void printAlt(alt_t* alt, int32_t lvl);
+
+void printAlts(alt_list_t* alts, int32_t lvl);
+
+void printCaseExpr(e_case_t* expr, int32_t lvl);
+
+void printLambdaExpr(e_lam_t* expr, int32_t lvl);
+
+void printLetExpression(e_let_t* expr, int32_t lvl);
+
+void printDefs(defs_list_t* defs, int32_t lvl);
+
+void printApExpr(e_ap_nodes* expr, int32_t lvl);
 
 #endif //AST_H

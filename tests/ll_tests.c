@@ -4,7 +4,7 @@
 #define lambda(lambda$_ret, lambda$_args, lambda$_body)\
   ({\
     lambda$_ret lambda$__anon$ lambda$_args\
-      lambda$_body\
+      lambda$_body9\
     &lambda$__anon$;\
   })
 
