@@ -9,7 +9,6 @@ int_list_t* list_init(addr_t val) {
 int_list_t* list_push(int_list_t* l, addr_t val) {
     int_list_t* new = list_init(val);
     new->next = l;
-    l->prev = new;
     return new;
 }
 
@@ -20,13 +19,10 @@ int_list_t* list_concat(int_list_t* l1, int_list_t* l2) {
         l1 = l1->next;
     }
     l1->next = l2;
-    l2->prev = l1;
     return l;
 }
 
 void list_free(int_list_t* l) {
-    if (l->prev) l->prev->next = 0;
-    if (l->next) l->next->prev = 0;
     free(l);
 }
 
@@ -47,7 +43,6 @@ heap_t* heap_empty() {
     for (uint16_t i = 65535; i > 0; --i){
         l = malloc(sizeof(int_list_t));
         l->next = heap->free;
-        if(heap->free) heap->free->prev = l;
         l->val = i;
         heap->free = l;
     }

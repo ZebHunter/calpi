@@ -14,8 +14,6 @@ typedef enum {
 } expr_type_e;
 
 typedef struct {
-    //if letrec exists
-    bool is_rec;
     struct defs_list* defs;
     struct expr* body;
 } e_let_t;

@@ -7,12 +7,10 @@
 #include "node.h"
 
 #define MEM_SIZE 65535
-typedef uint16_t addr_t;
 
 typedef struct int_list{
     addr_t val;
     struct int_list* next;
-    struct int_list* prev;
 } int_list_t;
 
 typedef enum {
@@ -24,19 +22,19 @@ typedef enum {
 } heap_node_type_e;
 
 typedef enum {
-    ADD,
-    SUB,
-    DIV,
-    MOD,
-    MUL,
-    AND,
-    OR,
-    GT,
-    GT_EQ,
-    LT,
-    LT_EQ,
-    EQ,
-    NON_EQ
+    ADD_P,
+    SUB_P,
+    DIV_P,
+    MOD_P,
+    MUL_P,
+    AND_P,
+    OR_P,
+    GT_P,
+    GT_EQ_P,
+    LT_P,
+    LT_EQ_P,
+    EQ_P,
+    NON_EQ_P,
 } prim_e;
 
 typedef struct {
@@ -44,7 +42,12 @@ typedef struct {
     char* op_s;
 } prim_t;
 
-typedef struct {
+typedef struct{
+    addr_t a1;
+    addr_t a2;
+} ap_t;
+
+typedef struct heap_node{
     heap_node_type_e type;
 
     union {
@@ -56,11 +59,6 @@ typedef struct {
     };
 
 } heap_node_t;
-
-typedef struct{
-    addr_t a1;
-    addr_t a2;
-} ap_t;
 
 typedef struct {
     uint16_t size;
