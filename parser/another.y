@@ -114,7 +114,8 @@ expr6: aexprs                   {$$ = $1;}
 
 //defs_list_t*
 defuns: defun SEPARATOR defuns    {$$ = addDefsList($1, $3);}
-    | defun SEPARATOR             {$$ = addDefsList($1, NULL);}
+    | defun SEPARATOR             {$$ = $1;}
+    | defun                       {$$ = $1;}
 
 //defs_list_t*
 defun: var ASSIGN expression    {$$ = addDefun($1, $3);}

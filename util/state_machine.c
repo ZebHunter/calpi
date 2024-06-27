@@ -250,8 +250,8 @@ void instantiate_and_update(expr_t* expr, addr_t addr, heap_t* heap, map_t* env)
 }
 
 bool is_final(state_t* state) {
-    if (!state->stack) return true;
-    if(!(state->stack->next) && heap_find(state->heap, state->stack->val)->type == N_VAL) return true;
+    if (!state->stack) return false; // ERR EMPTY STACK
+    if(!(state->stack->next) && (!state->dump) && heap_find(state->heap, state->stack->val)->type == N_VAL) return true;
     return false;
 }
 
@@ -260,7 +260,7 @@ void admin(state_t* state) {
 }
 
 void num_step(state_t* state, int32_t val) {
-    if (!state->stack) {
+    if (!state->stack->next) {
         state->stack = state->dump->stack;
         state->dump = state->dump->next;
     }
@@ -369,13 +369,12 @@ void prim_step(state_t* state, prim_e op) {
         addr_t b_res = heap_alloc(state->heap, n_res);
         heap_update(state->heap, state->stack->next->next->val, n_res);
         state->stack = list_init(b_res);
-        //AAAAAAAAAAAAa
-        printf("?res = %d\n", n_res->n);
         return;
     }
     else {
-        dump_push(state->dump, state->stack->next->next);
-        dump_push(state->dump, list_init(b1));
+        printf("alalala\n");
+        state->dump = dump_push(state->dump, state->stack->next->next);
+        state->dump = dump_push(state->dump, list_init(b1));
         state->stack = list_init(b2);
         return;
     }
@@ -401,8 +400,11 @@ void step(state_t* state) {
 }
 
 void eval(state_t* state) {
-    // print_state(state);
-    if (is_final(state)) return;
+    print_state(state);
+    if (is_final(state)) {
+        printf("Out = %d\n",  heap_find(state->heap, state->stack->val)->n);
+        return;
+    };
     step(state);
     admin(state);
     eval(state);
