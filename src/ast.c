@@ -14,8 +14,8 @@ program_t* addProgramNode(supercomb_t* comb, program_t* next){
 supercomb_t* addSupercomb(string_list_t* args, expr_t* expr){
     supercomb_t* comb = malloc(sizeof(supercomb_t));
     char* name = args->str;
-    if (args->next) args = args->next;
-    args->prev = NULL;
+    /*if (args->next)*/ args = args->next;
+    // args->prev = NULL;
     comb->name = name;
     comb->args = args;
     comb->body = expr;
@@ -120,6 +120,15 @@ expr_t* addAexprDigit(int32_t num){
     return expr;
 }
 
+expr_t* addAexprLevel(expr_t* tree, expr_t* new) {
+    expr_t* expr = malloc(sizeof(expr_t));
+    expr->type = E_AP;
+    expr->ap = malloc(sizeof(e_ap_nodes));
+    expr->ap->left = tree;
+    expr->ap->right = new;
+    return expr;
+}
+
 void printProgram(program_t* program){
     for (program_t* node = program; node != NULL; node = node->next){
         printSupercomb(node->definition, 0);
@@ -195,7 +204,13 @@ void printLetExpression(e_let_t* expr, int32_t lvl){
 }
 
 void printApExpr(e_ap_nodes* expr, int32_t lvl){
-    if(expr->left) printExpr(expr->left, lvl+1);
-    if(expr->right) printExpr(expr->right, lvl+1);
+    if(expr->left) {
+        printf("%*sLeft\n", lvl, "");
+        printExpr(expr->left, lvl+1);
+    }
+    if(expr->right) {
+        printf("%*sRight\n", lvl, "");
+        printExpr(expr->right, lvl+1);
+    }
 }
 

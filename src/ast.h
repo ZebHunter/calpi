@@ -36,6 +36,8 @@ expr_t* addAexprVar(char* var);
 
 expr_t* addAexprDigit(int32_t num);
 
+expr_t* addAexprLevel(expr_t* tree, expr_t* new);
+
 void printProgram(program_t* program);
 
 void printVars(string_list_t* list, int32_t lvl);

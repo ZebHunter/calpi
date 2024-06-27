@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "map.h"
 #include "node.h"
 
@@ -71,6 +72,7 @@ int_list_t* list_push(int_list_t* l, addr_t val);
 int_list_t* list_concat(int_list_t* l1, int_list_t* l2);
 void list_free(int_list_t* l);
 int_list_t* list_drop(int_list_t* l, int32_t n);
+void int_list_print(int_list_t* l);
 
 
 heap_t* heap_empty();
@@ -79,5 +81,7 @@ void heap_update(heap_t* heap, addr_t addr, heap_node_t* node);
 void heap_free(heap_t* heap, addr_t addr);
 
 heap_node_t* heap_find(heap_t* heap, addr_t addr);
+void heap_print(heap_t* h);
+void heap_node_print(heap_node_t* n);
 
 #endif

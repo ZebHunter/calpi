@@ -5,9 +5,10 @@
 #include "src/ast.h"
 #define YYDEBUG 1
 
+program_t* program;
 %}
 
-%parse-param {program_t* programs}
+/* %parse-param {program_t* programs} */
 
 %union {
     char* text;
@@ -62,7 +63,7 @@
 %%
 
 //program_t*
-program: supercombinators       {programs = $1; printProgram(programs);}
+program: supercombinators       {program = $1;} //printProgram(programs);}
 
 //program_t*
 supercombinators: supercombinator SEPARATOR supercombinators        {$$ = addProgramNode($1, $3);}
@@ -128,7 +129,7 @@ alt: DIGIT vars ARROW expression    {$$ = addAlt($1, $2, $4);}
 relop: LESS | LESS_EQ | GT | GT_EQ | EQUALS | NOT_EQUALS
 
 //expr_t*
-aexprs: aexprs aexpr                    {$$ = $2;}
+aexprs: aexprs aexpr                    {$$ = addAexprLevel($1, $2);}
     | aexpr                             {$$ = $1;}
 
 //expr_t*

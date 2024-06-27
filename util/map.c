@@ -21,9 +21,9 @@ void map_add(map_t** map, char* key, addr_t val){
     map_t* curr = malloc(sizeof(map_t));
     curr->key = key;
     curr->val = val;
-    if(*map) {
+    // if(*map) {
         curr->next = *map;
-    }
+    // }
     *map = curr;
 }
 
@@ -35,4 +35,12 @@ map_t* map_concat(map_t* m1, map_t* m2) {
     }
     m1->next = m2;
     return m;
+}
+
+void map_print(map_t* m) {
+    printf("map:\n");
+    while(m) {
+        printf("{%s -> %d}\n", m->key, m->val);
+        m = m->next;
+    }
 }

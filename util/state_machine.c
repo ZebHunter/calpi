@@ -138,7 +138,7 @@ tmp build_init_heap(program_t* defs) {
         node->prim->op_e = prims->e;
         node->prim->op_s = prims->s;
         addr = heap_alloc(h, node);
-        map_add(&m, defs->definition->name, addr);
+        map_add(&m, prims->s, addr);
         next = prims->next;
         free(prims);
         prims = next;
@@ -181,36 +181,34 @@ map_t* instantiate_defs(defs_list_t* d, heap_t* heap, map_t* env) {
 
 addr_t instantiate(expr_t* expr, heap_t* heap, map_t* env) {
     switch (expr->type) {
-    case E_VAL: {
-        heap_node_t* n = malloc(sizeof(heap_node_t));
-        n->type = N_VAL;
-        n->n = expr->val;
-        return heap_alloc(heap, n);
-    }
-    case E_AP: {
-        heap_node_t* n = malloc(sizeof(heap_node_t));
-        n->type = N_AP;
-        n->ap  = malloc(sizeof(ap_t));
-        n->ap->a1 = instantiate(expr->ap->left, heap, env);
-        n->ap->a2 = instantiate(expr->ap->right, heap, env);
-        return heap_alloc(heap, n);
-    }
-    case E_VAR: {
-        addr_t addr = map_find(env, expr->name);
-        if (!addr) // JOPA JOPA JOPA UNDEF NAME;
-        return addr;
-    }
-    case E_CASE: {
-        //JOPA JOPA CASE INSTANT JOPA
-        return -1;
-    }
-    case E_LET: {
-        map_t* bindings = instantiate_defs(expr->let->defs, heap, env);
-        map_t* env1 = map_concat(bindings, env);
-        return instantiate(expr->let->body, heap, env1);
-    }
-    default:
-        break;
+        case E_VAL: {
+            heap_node_t* n = malloc(sizeof(heap_node_t));
+            n->type = N_VAL;
+            n->n = expr->val;
+            return heap_alloc(heap, n);
+        }
+        case E_AP: {
+            heap_node_t* n = malloc(sizeof(heap_node_t));
+            n->type = N_AP;
+            n->ap  = malloc(sizeof(ap_t));
+            n->ap->a1 = instantiate(expr->ap->left, heap, env);
+            n->ap->a2 = instantiate(expr->ap->right, heap, env);
+            return heap_alloc(heap, n);
+        }
+        case E_VAR: {
+            addr_t addr = map_find(env, expr->name);
+            if (!addr); // JOPA JOPA JOPA UNDEF NAME;
+            return addr;
+        }
+        case E_CASE: {
+            //JOPA JOPA CASE INSTANT JOPA
+            return 0;
+        }
+        case E_LET: {
+            map_t* bindings = instantiate_defs(expr->let->defs, heap, env);
+            map_t* env1 = map_concat(bindings, env);
+            return instantiate(expr->let->body, heap, env1);
+        }
     }
 }
 
@@ -298,13 +296,10 @@ void supercomb_step(state_t* state, supercomb_t* sc) {
         map_add(&arg_bindings, name->str, heap_find(state->heap, stack->next->val)->ap->a2);
         name = name->next;
         stack = stack->next;
-        len++;
+        ++len;
     }
-
     map_t* env = map_concat(arg_bindings, state->globals);
-
     instantiate_and_update(sc->body, stack->val, state->heap, env);
-
     state->stack = list_drop(state->stack, len);
 }
 
@@ -375,7 +370,7 @@ void prim_step(state_t* state, prim_e op) {
         heap_update(state->heap, state->stack->next->next->val, n_res);
         state->stack = list_init(b_res);
         //AAAAAAAAAAAAa
-        printf("?res = %d", n_res->n);
+        printf("?res = %d\n", n_res->n);
         return;
     }
     else {
@@ -406,8 +401,29 @@ void step(state_t* state) {
 }
 
 void eval(state_t* state) {
+    // print_state(state);
     if (is_final(state)) return;
     step(state);
     admin(state);
     eval(state);
+}
+
+void dump_print(dump_t * d) {
+    printf("Dump:\n");
+    while(d) {
+        int_list_print(d->stack);
+        d = d->next;
+    }
+}
+
+void print_state(state_t* s) {
+    printf("State:\n");
+    printf("stack: ");
+    int_list_print(s->stack);
+
+    dump_print(s->dump);
+    heap_print(s->heap);
+    map_print(s->globals);
+    printf("stat = %d\n###########################################\n\n", s->stats);
+
 }

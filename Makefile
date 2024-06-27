@@ -16,8 +16,9 @@ run:
 clean:
 	rm *.tab.*
 	rm *.yy.c
+	rm jopa
 
-try:
+try: parser lex
 	gcc lex.yy.c another.tab.c src/ast.c main.c util/heap.c util/map.c util/state_machine.c -o jopa
 
 .PHONY: parser lex clean
