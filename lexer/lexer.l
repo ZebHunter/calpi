@@ -6,6 +6,8 @@
 #include "another.tab.h"
 %}
 
+%x COMMENT
+
 %%
 
 \+     {yylval.text = strdup(yytext); return PLUS;}
@@ -31,6 +33,15 @@ in    {return IN;}
 case  {return CASE;}
 %     {yylval.text = strdup(yytext);return MOD;}
 [A-Za-z_][A-Za-z0-9_]* {yylval.text = strdup(yytext); return NAME;}
+
+"/*"  {BEGIN(COMMENT);}
+<COMMENT>"*/" {BEGIN(INITIAL);}
+<COMMENT>.      { }
+<COMMENT>\n     { }
+<COMMENT><<EOF>> {yyerror("Unterminate comment");}
+
+"//".*
+
 [+-]?[0-9]+  {yylval.num = atoi(yytext); return DIGIT;}
 [ \t\r\n]     { }
 .	{ yyerror("Mystery character \"%c\"\n"); }

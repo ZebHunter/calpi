@@ -114,7 +114,8 @@ expr6: aexprs                   {$$ = $1;}
 
 //defs_list_t*
 defuns: defun SEPARATOR defuns    {$$ = addDefsList($1, $3);}
-    | defun SEPARATOR             {$$ = addDefsList($1, NULL);}
+    | defun SEPARATOR             {$$ = $1;}
+    | defun                       {$$ = $1;}
 
 //defs_list_t*
 defun: var ASSIGN expression    {$$ = addDefun($1, $3);}
@@ -129,7 +130,7 @@ alt: DIGIT vars ARROW expression    {$$ = addAlt($1, $2, $4);}
 relop: LESS | LESS_EQ | GT | GT_EQ | EQUALS | NOT_EQUALS
 
 //expr_t*
-aexprs: aexprs aexpr                    {$$ = addAexprLevel($1, $2);}
+aexprs: aexprs aexpr                    {$$ = wrapperExprOperation($1, $2);}
     | aexpr                             {$$ = $1;}
 
 //expr_t*
