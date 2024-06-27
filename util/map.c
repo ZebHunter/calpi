@@ -21,9 +21,7 @@ void map_add(map_t** map, char* key, addr_t val){
     map_t* curr = malloc(sizeof(map_t));
     curr->key = key;
     curr->val = val;
-    // if(*map) {
-        curr->next = *map;
-    // }
+    curr->next = *map;
     *map = curr;
 }
 
